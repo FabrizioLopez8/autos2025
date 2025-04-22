@@ -1,0 +1,5 @@
+definir una funcion en la clase juego que es solo la funcion de spirte de PIXI
+
+segunda flecha que se utiliza para avisar cuando esta muy cerca de la pared (la segunda flecha tocando los bordes. ¿o distancia entre segunda flecha y pared(tiene que ser una flecha?)? ¿colision con los bordes?
+
+tener una funcion para avisar cuando esta muy cerca de los bordes por cada direccion
