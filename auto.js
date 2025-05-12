@@ -2,15 +2,58 @@
 // poner una flecha que rota y el auto lo sigue (como sigue el auto? va hacia la punta de la flecha? burro siguendo zanahoria)
 // esto tambien puede ser la direccion del auto
 
-class Auto{
-    constructor(juego){
+class Auto {
+    constructor(juego, x, y) {
         this.juego = juego;
 
-        //this.x = startx;
-        //this.y = starty;
+        this.x = x;
+        this.y = y;
 
-        this.sprite = new juego.app.Sprite.from('sprites\cero\auto.png')
+        this.spriteLoaded = false;
 
-        juego.app.stage.addChild(this.sprite);
+        this.speed = 0;
+        this.rotation = 0;
+
+        this.generate()
     }
+
+    generate() {
+        this.loadSprite();
+    }
+
+    async loadSprite() {
+        const texture = await PIXI.Assets.load("sprites/cero/auto.png");
+        console.log("texture", texture);
+        this.sprite = new PIXI.Sprite(texture);
+        console.log("sprite", this.sprite);
+        this.sprite.anchor.set(0.5);
+        this.spriteLoaded = true;
+        this.juego.app.stage.addChild(this.sprite);
+    }
+
+    processMovement(delta) {
+        if (this.juego.keyboard.w) this.speed = 10; else this.speed = 0;
+        if (this.juego.keyboard.a) this.rotation += 0.05;
+        if (this.juego.keyboard.d) this.rotation -= 0.05;
+
+        this.x += delta * this.speed * Math.cos(this.rotation);
+        console.log(delta * this.speed * Math.cos(this.rotation))
+        this.y += delta * this.speed * Math.sin(this.rotation);
+    }
+
+    update(delta) {
+        if (!this.spriteLoaded) return;
+
+        this.processMovement(delta);
+
+        this.render()
+    }
+
+    render() {
+        this.sprite.x = this.x;
+        this.sprite.y = this.y;
+
+        this.sprite.rotation = this.rotation;
+    }
+
 }
