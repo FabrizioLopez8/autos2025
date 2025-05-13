@@ -22,7 +22,7 @@ class Auto {
     }
 
     async loadSprite() {
-        const texture = await PIXI.Assets.load("sprites/cero/auto.png");
+        const texture = await PIXI.Assets.load("./sprites/cero/auto.png");
         console.log("texture", texture);
         this.sprite = new PIXI.Sprite(texture);
         console.log("sprite", this.sprite);
