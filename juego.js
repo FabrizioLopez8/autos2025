@@ -27,6 +27,7 @@ class Juego {
         document.body.appendChild(this.app.canvas);
         window.__PIXI_APP__ = this.app;
         this.autoJugable = new Auto(this, this.width * 0.5, this.height * 0.5);
+        this.autoIA = new AutoIA(this, this.width * 0.5, (this.height * 0.5 + 100));
         this.eventListenerSetup();
         this.app.ticker.add(() => this.gameLoop());
     }
@@ -38,6 +39,7 @@ class Juego {
         this.app.stage.update;
 
         if (this.autoJugable) this.autoJugable.update(this.app.ticker.deltaTime)
+        if (this.autoIA) this.autoIA.update()
         //console.log(this.keyboard.w);
         //console.log(timeElapsed)
     }

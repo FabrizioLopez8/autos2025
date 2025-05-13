@@ -32,12 +32,13 @@ class Auto {
     }
 
     processMovement(delta) {
-        if (this.juego.keyboard.w) this.speed = 10; else this.speed = 0;
-        if (this.juego.keyboard.a) this.rotation += 0.05;
-        if (this.juego.keyboard.d) this.rotation -= 0.05;
+        if (this.juego.keyboard.w) { this.speed = 10; }
+        else if (this.juego.keyboard.s) this.speed = -10; else this.speed = 0
+        if (this.juego.keyboard.a && this.speed) this.rotation -= 0.05;
+        if (this.juego.keyboard.d && this.speed) this.rotation += 0.05;
 
         this.x += delta * this.speed * Math.cos(this.rotation);
-        console.log(delta * this.speed * Math.cos(this.rotation))
+        //console.log(delta * this.speed * Math.cos(this.rotation))
         this.y += delta * this.speed * Math.sin(this.rotation);
     }
 
@@ -46,6 +47,9 @@ class Auto {
 
         this.processMovement(delta);
 
+        if (this.juego.autoIA) {
+            if (distancia(this, this.juego.autoIA) < 90) this.applyCollisionForce(this.juego.autoIA)
+        }
         this.render()
     }
 
@@ -54,6 +58,17 @@ class Auto {
         this.sprite.y = this.y;
 
         this.sprite.rotation = this.rotation;
+    }
+
+    applyCollisionForce(obj1) {
+        if (this.speed > 0) {
+            this.x += Math.sqrt((this.x - obj1.x) ** 2) * -0.2
+            this.y += Math.sqrt((this.y - obj1.y) ** 2) * -0.2
+        }
+        else {
+            this.x += Math.sqrt((this.x - obj1.x) ** 2) * 0.2
+            this.y += Math.sqrt((this.y - obj1.y) ** 2) * 0.2
+        }
     }
 
 }
