@@ -3,7 +3,10 @@ class Juego {
         this.app = new PIXI.Application();
         this.width = 1000
         this.height = 750
+        this.cellWidth = 100
         this.app.init({ background: '#333333', width: this.width, height: this.height }).then(() => { this.dibujarCanvas(); });
+
+        this.grid = new Grid(this, this.cellWidth);
 
         this.keyboard = {};
 
@@ -30,6 +33,8 @@ class Juego {
         this.autoIA = new AutoIA(this, this.width * 0.5, (this.height * 0.5 + 100));
         this.eventListenerSetup();
         this.app.ticker.add(() => this.gameLoop());
+
+
     }
 
     gameLoop(d) {

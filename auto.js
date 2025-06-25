@@ -13,7 +13,7 @@ class Auto {
 
         this.spriteLoaded = false;
 
-        this.velmax = 3
+        this.velmax = 10
         this.acc = 0.2
 
         this.acc = 0
@@ -31,7 +31,7 @@ class Auto {
 
     async loadSprite() {
         const texture = await PIXI.Assets.load("./sprites/cero/auto.png");
-        console.log("texture", texture);
+        //console.log("texture", texture);
         this.sprite = new PIXI.Sprite(texture);
         this.sprite.anchor.set(0.5);
         this.spriteLoaded = true;
@@ -87,6 +87,7 @@ class Auto {
     }
     aplicarVel() {
         this.velx = Math.min(this.velx + this.acc, this.velmax)
+        console.log(this.velx)
         this.vely = Math.min(this.vely + this.acc, this.velmax)
         this.velx = Math.max(this.velx - 0.1, 0)
         this.vely = Math.max(this.vely - 0.1, 0)
@@ -98,7 +99,7 @@ class Auto {
 
     leerInput() {
         if (this.juego.keyboard.w) { this.aplicarAcc(0.2) } else this.aplicarAcc(0)
-        //else if (this.juego.keyboard.s) this.speed = -10; else this.speed = 0
+        if (this.juego.keyboard.s) this.aplicarAcc(-0.2); else this.speed = 0
         if (this.juego.keyboard.a) this.rotation -= 0.01;
         if (this.juego.keyboard.d) this.rotation += 0.01;
     }
