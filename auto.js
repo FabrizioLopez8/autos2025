@@ -13,8 +13,9 @@ class Auto {
 
         this.spriteLoaded = false;
 
-        this.velmax = 0.10 
+        this.velmax = 0.8 
         this.acc = 0.01
+        this.desacc = 0.02
 
         this.acc = 0
         this.vel = {x: 0, y: 0}
@@ -53,14 +54,19 @@ class Auto {
         if (!this.spriteLoaded) return;
 
         this.leerInput();
-        this.aplicarVel()
+        //this.aplicarVel()
         this.actualizarPosition(delta)
 
         if (this.juego.autoIA) {
             if (distancia(this, this.juego.autoIA) < 90) this.applyCollisionForce(this.juego.autoIA)
         }
         
-        if (this.vel.y < -1){console.log('no')}
+        this.vel.x -= Math.min(0.10, this.vel.x) // desaccelar el auto
+        this.vel.y -= Math.min(0.10, this.vel.y) // uso math.min para evitar que el valor se haga negativo
+
+        // if (this.vel.x < 0){this.vel.x += 0.1}
+        // if (this.vel.y < 0){this.vel.y += 0.1}
+
         this.render()
         }
     
@@ -82,7 +88,13 @@ class Auto {
     }
 
     aplicarAcc(nro){
-        this.acc = nro
+        this.vel.x += Math.min(nro, this.velmax)
+        this.vel.y += Math.min(nro, this.velmax)
+            
+    }
+    aplicarDesacc(nro){
+        this.vel.x -= nro
+        this.vel.y -= nro
     }
     /*aplicarVel(delta){
         this.velx += Math.min(delta * (this.acc +  this.mantenerVelocidad()) * Math.cos(this.rotation), this.velmax) //cuando suelte el accelerador, se queda el 0 impidiento el auto en mover su  velocidad
@@ -95,14 +107,7 @@ class Auto {
         this.y += this.vely
     }*/
 
-    aplicarVel(){
-        this.vel.x += Math.min(this.acc, this.velmax)
-        this.vel.y += Math.min(this.acc, this.velmax)
-        if (!this.acc){
-            this.vel.x -= Math.min(0.10, this.vel.x) //desaccelar el auto cuando no se aplica acc
-            this.vel.y -= Math.min(0.10, this.vel.y) // uso math.min para evitar que el valor se haga negativo
-        }
-    }
+    
     actualizarPosition(delta){
         this.x += delta * this.vel.x * Math.cos(this.rotation)
         this.y += delta * this.vel.y * Math.sin(this.rotation)
@@ -110,7 +115,7 @@ class Auto {
 
     leerInput(){
         if (this.juego.keyboard.w) { this.aplicarAcc(0.2)} else {this.aplicarAcc(0)}
-        if (this.juego.keyboard.s) { this.aplicarAcc(-0.2)}
+        if (this.juego.keyboard.s) { this.aplicarDesacc(0.2)}
         //else if (this.juego.keyboard.s) this.speed = -10; else this.speed = 0
         if (this.juego.keyboard.a) this.girarSentidoContraHorario()
         if (this.juego.keyboard.d) this.girarSentidoHorario()
