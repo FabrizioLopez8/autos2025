@@ -21,6 +21,8 @@ class Auto {
         this.vely = 0
         this.rotation = 0;
 
+        this.position = { x: this.x, y: this.y }
+
         this.generate()
     }
 
@@ -87,7 +89,7 @@ class Auto {
     }
     aplicarVel() {
         this.velx = Math.min(this.velx + this.acc, this.velmax)
-        console.log(this.velx)
+        //console.log(this.velx)
         this.vely = Math.min(this.vely + this.acc, this.velmax)
         this.velx = Math.max(this.velx - 0.1, 0)
         this.vely = Math.max(this.vely - 0.1, 0)
@@ -95,6 +97,7 @@ class Auto {
     actualizarPosition(delta) {
         this.x += delta * this.velx * Math.cos(this.rotation)
         this.y += delta * this.vely * Math.sin(this.rotation)
+        this.position = { x: this.x, y: this.y }
     }
 
     leerInput() {

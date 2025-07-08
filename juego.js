@@ -8,6 +8,7 @@ class Juego {
 
         this.grid = new Grid(this, this.cellWidth);
 
+
         this.keyboard = {};
 
         this.autoJugable
@@ -30,9 +31,10 @@ class Juego {
         document.body.appendChild(this.app.canvas);
         window.__PIXI_APP__ = this.app;
         this.autoJugable = new Auto(this, this.width * 0.5, this.height * 0.5);
-        this.autoIA = new AutoIA(this, this.width * 0.5, (this.height * 0.5 + 100));
+        this.autoIA = new AutoIA(this, this.width * 0.5, (this.height * 0.5 + 100), 0, this.grid);
         this.eventListenerSetup();
         this.app.ticker.add(() => this.gameLoop());
+        this.grid.flowTowards(this.autoJugable.x, this.autoJugable.y)
 
 
     }
@@ -43,8 +45,10 @@ class Juego {
         timeElapsed += this.app.ticker.deltaTime;
         this.app.stage.update;
 
+        this.grid.flowTowards(this.autoJugable.x, this.autoJugable.y)
+
         if (this.autoJugable) this.autoJugable.update(this.app.ticker.deltaTime)
-        if (this.autoIA) this.autoIA.update()
+        if (this.autoIA) this.autoIA.update(this.app.ticker.deltaTime)
         //console.log(this.keyboard.w);
         //console.log(timeElapsed)
     }
