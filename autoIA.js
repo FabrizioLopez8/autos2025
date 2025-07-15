@@ -2,7 +2,7 @@ class AutoIA extends Auto {
     constructor(juego, x, y, angle, flow) {
         super(juego, x, y);
         this.id = 100
-
+        this.currentNode = 0;
         this.playerChar = this.juego.autoJugable.position
 
         this.atractionForce = 15;
@@ -14,9 +14,9 @@ class AutoIA extends Auto {
         this.cell = null
 
         this.mass = 2
-        this.position = new PIXI.Point(x, y);
-        this.velocity = new PIXI.Point();
-        this.acc = new PIXI.Point();
+        this.position = { x: 0, y: 0 };
+        this.velocity = { x: 0, y: 0 };
+        this.acc = { x: 0, y: 0 };
         this.maxForce = 0.2
         this.maxSpeed = 10
         //this.maxForce = 200
@@ -24,7 +24,7 @@ class AutoIA extends Auto {
         this.rotation = angle
 
         this.flow = flow
-
+        this.currentNodeIndex = 0; // Start at the first node
     }
 
     test(steerDirection) {
@@ -37,7 +37,7 @@ class AutoIA extends Auto {
     }
 
     test2() {
-        this.newForward = this.velocity.normalize();
+        this.newForward = normalizeV(this.velocity);
         this.newSide = perpendicular(this.newForward);
         this.direction = Math.atan2(this.newForward.x, this.newForward.y);
         this.rotation = this.direction;
@@ -77,7 +77,7 @@ class AutoIA extends Auto {
 
         this.acc.set(0, 0);
 
-        console.log(flow)
+        //console.log(flow)
     }
 
     applyForce(x, y) {
@@ -100,20 +100,39 @@ class AutoIA extends Auto {
 
     update(dt) {
         if (!this.spriteLoaded) return;
-        this.playerChar = { x: this.juego.autoJugable.position.x - this.x, y: this.juego.autoJugable.position.y - this.y }
+        //this.playerChar = { x: this.juego.autoJugable.position.x - this.x, y: this.juego.autoJugable.position.y - this.y }
         //if (this.juego.autoJugable) console.log(distancia(this, this.juego.autoJugable));
         //this.group();
         //this.attraction();
         //this.test(this.playerChar)
-        this.flowtest(dt)
+        //this.flowtest(dt)
         //this.test2()
+        if (this.juego.raceNodes && this.juego.raceNodes.length > 0) {
+            const node = this.juego.raceNodes[this.currentNodeIndex];
+            this.followTarget(dt, node.x, node.y);
+
+            // revisar si hay que cambiar de nodo segun cercania
+            const dx = this.position.x - node.x;
+            const dy = this.position.y - node.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 30) {
+                this.currentNodeIndex++;
+                if (this.currentNodeIndex >= this.juego.raceNodes.length) {
+                    this.currentNodeIndex = 0; // loop al primer nodo
+                }
+            }
+        }
+        if (this.juego.cars && this.juego.cars.length > 1) {
+            const sep = this.separation(this.juego.cars, 75);
+            this.acc.x += sep.x;
+            this.acc.y += sep.y;
+        }
         this.x = this.position.x;
         this.y = this.position.y;
 
-
         this.render();
 
-        this.updatePositionOnGrid()
+        //if (this.flow) this.updatePositionOnGrid()
     }
 
     updatePositionOnGrid() {
@@ -128,6 +147,85 @@ class AutoIA extends Auto {
         }
 
         //console.log(currentCell)
+    }
+
+    followTarget(delta, targetx, targety) {
+
+        const desired = {
+            x: targetx - this.position.x,
+            y: targety - this.position.y
+        };
+
+        const mag = Math.hypot(desired.x, desired.y);
+        if (mag > 0) {
+            desired.x = (desired.x / mag) * this.maxSpeed;
+            desired.y = (desired.y / mag) * this.maxSpeed;
+        }
+
+
+        const steer = {
+            x: desired.x - this.velocity.x,
+            y: desired.y - this.velocity.y
+        };
+
+        const steerMag = Math.hypot(steer.x, steer.y);
+        if (steerMag > this.maxForce) {
+            steer.x = (steer.x / steerMag) * this.maxForce;
+            steer.y = (steer.y / steerMag) * this.maxForce;
+        }
+
+        // steering
+        this.acc.x += steer.x;
+        this.acc.y += steer.y;
+
+        this.velocity.x += this.acc.x * delta;
+        this.velocity.y += this.acc.y * delta;
+
+        // limita velocidad
+        const speed = Math.hypot(this.velocity.x, this.velocity.y);
+        if (speed > this.maxSpeed) {
+            this.velocity.x = (this.velocity.x / speed) * this.maxSpeed;
+            this.velocity.y = (this.velocity.y / speed) * this.maxSpeed;
+        }
+
+        if (!delta) delta = 1;
+        this.position.x += this.velocity.x * delta;
+        this.position.y += this.velocity.y * delta;
+
+        this.sprite.rotation = Math.atan2(this.velocity.y, this.velocity.x);
+
+        this.acc.x = 0;
+        this.acc.y = 0;
+    }
+
+    separation(cars, separationForce = 50) {
+        let steer = { x: 0, y: 0 };
+        let count = 0;
+
+        for (let other of cars) {
+            if (other === this) continue;
+            const dx = this.position.x - other.position.x;
+            const dy = this.position.y - other.position.y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+
+            if (d > 0 && d < separationForce) {
+                steer.x += dx / d;
+                steer.y += dy / d;
+                count++;
+            }
+        }
+
+        if (count > 0) {
+            steer.x /= count;
+            steer.y /= count;
+            // Normalize and scale to maxForce
+            const mag = Math.sqrt(steer.x * steer.x + steer.y * steer.y);
+            if (mag > 0) {
+                steer.x = (steer.x / mag) * this.maxForce;
+                steer.y = (steer.y / mag) * this.maxForce;
+            }
+        }
+        return steer;
     }
 
 }

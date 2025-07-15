@@ -2,8 +2,8 @@ class Grid {
     constructor(juego, cellWidth) {
         this.juego = juego;
         this.cellWidth = cellWidth;
-        this.cellWidthSize = Math.ceil(juego.width / this.cellWidth) * 2;
-        this.cellHeightSize = Math.ceil(juego.height / this.cellWidth) * 2;
+        this.cellWidthSize = Math.ceil(juego.bgimg.width / this.cellWidth) * 2;
+        this.cellHeightSize = Math.ceil(juego.bgimg.height / this.cellWidth) * 2;
         this.cells = {};
         this.cols = 0;
         this.rows = 0;
@@ -53,7 +53,7 @@ class Grid {
                 const worldX = x * this.cellWidth + this.cellWidth / 2;
                 const worldY = y * this.cellWidth + this.cellWidth / 2;
                 const dirx = posx - worldX;
-                const diry = posy - worldX;
+                const diry = posy - worldY;
                 const vec = new PIXI.Point(dirx, diry);
                 vec.normalize();
                 this.field[idx] = vec;
