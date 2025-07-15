@@ -67,7 +67,7 @@ class Juego {
 
 
         this.autoJugable = new Auto(this, 3300, 1100);
-        this.generateCars(1000, 3100, 800, 4300, 1350);
+        this.generateCars(100, 3100, 800, 4300, 1350);
         this.app.ticker.add(() => this.gameLoop());
         this.app.stage.addChild(this.mainContainer);
         //this.grid.flowTowards(this.autoJugable.x, this.autoJugable.y)
