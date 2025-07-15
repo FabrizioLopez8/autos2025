@@ -113,16 +113,14 @@ class Juego {
     moveCamera() {
         if (!this.bgimg) return;
 
-        // Desired camera position to center the player
+
         let targetX = -this.autoJugable.x + this.width / 2;
         let targetY = -this.autoJugable.y + this.height / 2;
-
-        // Clamp so the camera doesn't go out of bounds
-        // Left/top bounds
+        // left/top bounds
         targetX = Math.min(targetX, 0);
         targetY = Math.min(targetY, 0);
 
-        // Right/bottom bounds
+        // right/bottom bounds
         targetX = Math.max(targetX, this.width - this.bgimg.width);
         targetY = Math.max(targetY, this.height - this.bgimg.height);
 
