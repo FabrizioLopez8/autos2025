@@ -13,7 +13,7 @@ class Auto {
 
         this.spriteLoaded = false;
 
-        this.velmax = 10
+        this.velmax = 3
         this.acc = 0.2
 
         this.acc = 0
@@ -101,9 +101,10 @@ class Auto {
     }
 
     leerInput() {
-        if (this.juego.keyboard.w) { this.aplicarAcc(0.2) } else this.aplicarAcc(0)
-        if (this.juego.keyboard.s) this.aplicarAcc(-0.2); else this.speed = 0
-        if (this.juego.keyboard.a) this.rotation -= 0.01;
-        if (this.juego.keyboard.d) this.rotation += 0.01;
+        if (this.juego.keyboard.w) { this.aplicarAcc(0.2) } else { this.aplicarAcc(0) }
+        if (this.juego.keyboard.s) { this.aplicarDesacc(0.2) }
+        //else if (this.juego.keyboard.s) this.speed = -10; else this.speed = 0
+        if (this.juego.keyboard.a) this.girarSentidoContraHorario()
+        if (this.juego.keyboard.d) this.girarSentidoHorario()
     }
 }
