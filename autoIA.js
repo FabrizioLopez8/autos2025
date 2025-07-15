@@ -115,7 +115,7 @@ class AutoIA extends Auto {
             const dx = this.position.x - node.x;
             const dy = this.position.y - node.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 30) {
+            if (dist < 100) {
                 this.currentNodeIndex++;
                 if (this.currentNodeIndex >= this.juego.raceNodes.length) {
                     this.currentNodeIndex = 0; // loop al primer nodo
@@ -198,7 +198,7 @@ class AutoIA extends Auto {
         this.acc.y = 0;
     }
 
-    separation(cars, separationForce = 50) {
+    separation(cars, separationForce = 100) {
         let steer = { x: 0, y: 0 };
         let count = 0;
 

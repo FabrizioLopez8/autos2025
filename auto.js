@@ -17,7 +17,7 @@ class Auto {
         //this.velmax = 3
         //this.acc = 0.2
 
-        this.velmax = 14
+        this.velmax = 13
         this.acc = 0.2
         this.desacc = 0.3
 

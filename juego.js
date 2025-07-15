@@ -23,7 +23,7 @@ class Juego {
             "posx5": 3000,
             "posy5": 2400,
 
-            "posx6": 4850,
+            "posx6": 4450,
             "posy6": 2400,
 
             "posx7": 5100,
