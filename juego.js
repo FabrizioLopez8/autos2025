@@ -14,7 +14,7 @@ class Juego {
             "posx2": 1600,
             "posy2": 1100,
 
-            "posx3": 950,
+            "posx3": 900,
             "posy3": 1750,
 
             "posx4": 1400,
@@ -23,10 +23,10 @@ class Juego {
             "posx5": 3000,
             "posy5": 2400,
 
-            "posx6": 4450,
+            "posx6": 4500,
             "posy6": 2400,
 
-            "posx7": 5100,
+            "posx7": 5150,
             "posy7": 1750,
 
             "posx8": 4400,
@@ -37,7 +37,6 @@ class Juego {
         for (let i = 0; i < 8; i++) {
             let node = new PNode(this.nodePos[("posx" + String(i + 1))], this.nodePos[("posy" + String(i + 1))]);
             this.raceNodes[i] = node;
-            console.log(this.raceNodes);
 
         }
         this.cars = []
@@ -68,7 +67,7 @@ class Juego {
 
 
         this.autoJugable = new Auto(this, 3300, 1100);
-        this.generateCars(60, 3100, 800, 4300, 1350);
+        this.generateCars(1000, 3100, 800, 4300, 1350);
         this.app.ticker.add(() => this.gameLoop());
         this.app.stage.addChild(this.mainContainer);
         //this.grid.flowTowards(this.autoJugable.x, this.autoJugable.y)
@@ -105,7 +104,6 @@ class Juego {
                 car.update(this.app.ticker.deltaTime);
             }
         }
-        console.log(this.autoJugable.x, this.autoJugable.y)
         //console.log(this.keyboard.w);
         //console.log(timeElapsed)
     }
@@ -131,10 +129,11 @@ class Juego {
     generateCars(N, xMin, yMin, xMax, yMax) {
         for (let i = 0; i < N; i++) {
 
-            const x = Math.random() * (xMax - xMin) + xMin;
-            const y = Math.random() * (yMax - yMin) + yMin;
+            //const x = Math.random() * (xMax - xMin) + xMin;
+            //const y = Math.random() * (yMax - yMin) + yMin;
+            //console.log(x, y)
 
-            const car = new AutoIA(this, x, y, 0, this.grid);
+            const car = new AutoIA(this, (Math.random() * (xMax - xMin) + xMin), (Math.random() * (yMax - yMin) + yMin), 0, this.grid);
             this.cars.push(car);
         }
     }

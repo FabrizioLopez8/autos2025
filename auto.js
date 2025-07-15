@@ -64,23 +64,26 @@ class Auto {
         if (!this.spriteLoaded) return;
 
         this.leerInput();
-        //this.aplicarVel()
-        this.actualizarPosition(delta)
+        this.actualizarPosition(delta);
 
-        //if (this.juego.autoIA) {
-        //    if (distancia(this, this.juego.autoIA) < 90) this.applyCollisionForce(this.juego.autoIA)
-        //}
+        for (let other of this.juego.cars) {
+            if (other !== this) {
+                let dx = this.x - other.x;
+                let dy = this.y - other.y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+                let collisionDistance = 60;
 
+                if (dist < collisionDistance) {
+                    console.log("car collided with ", other)
+                    this.applyCollisionForce(other);
+                }
+            }
+        }
 
+        this.vel.x -= Math.min(0.10, this.vel.x);
+        this.vel.y -= Math.min(0.10, this.vel.y);
 
-
-        this.vel.x -= Math.min(0.10, this.vel.x) // desaccelar el auto
-        this.vel.y -= Math.min(0.10, this.vel.y) // uso math.min para evitar que el valor se haga negativo
-
-        // if (this.vel.x < 0){this.vel.x += 0.1}
-        // if (this.vel.y < 0){this.vel.y += 0.1}
-
-        this.render()
+        this.render();
     }
 
     render() {
@@ -90,14 +93,19 @@ class Auto {
     }
 
     applyCollisionForce(obj1) {
-        if (this.speed > 0) {
-            this.x += Math.sqrt((this.x - obj1.x) ** 2) * -0.2
-            this.y += Math.sqrt((this.y - obj1.y) ** 2) * -0.2
-        }
-        else {
-            this.x += Math.sqrt((this.x - obj1.x) ** 2) * 0.2
-            this.y += Math.sqrt((this.y - obj1.y) ** 2) * 0.2
-        }
+        // calcula distancia
+        let dx = this.x - obj1.x;
+        let dy = this.y - obj1.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist === 0) return;
+
+        dx /= dist;
+        dy /= dist;
+
+        let force = 9;
+        this.x += dx * force;
+        this.y += dy * force;
     }
 
 

@@ -14,7 +14,7 @@ class AutoIA extends Auto {
         this.cell = null
 
         this.mass = 2
-        this.position = { x: 0, y: 0 };
+        this.position = { x: x, y: y };
         this.velocity = { x: 0, y: 0 };
         this.acc = { x: 0, y: 0 };
         this.maxForce = 0.2
@@ -115,7 +115,7 @@ class AutoIA extends Auto {
             const dx = this.position.x - node.x;
             const dy = this.position.y - node.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 100) {
+            if (dist < 250) {
                 this.currentNodeIndex++;
                 if (this.currentNodeIndex >= this.juego.raceNodes.length) {
                     this.currentNodeIndex = 0; // loop al primer nodo
@@ -129,6 +129,20 @@ class AutoIA extends Auto {
         }
         this.x = this.position.x;
         this.y = this.position.y;
+
+
+        for (let other of this.juego.cars) {
+            if (other !== this) {
+                let dx = this.x - other.x;
+                let dy = this.y - other.y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+                let collisionDistance = 60;
+
+                if (dist < collisionDistance) {
+                    this.applyCollisionForce(other);
+                }
+            }
+        }
 
         this.render();
 
@@ -198,7 +212,7 @@ class AutoIA extends Auto {
         this.acc.y = 0;
     }
 
-    separation(cars, separationForce = 100) {
+    separation(cars, separationForce = 200) {
         let steer = { x: 0, y: 0 };
         let count = 0;
 
